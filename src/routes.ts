@@ -1,9 +1,9 @@
-import express, { Router, Request, Response} from 'express';
-
+import express, { Router } from 'express';
+import { CreateUserControler } from './controllers/user/CreateUserControler';
+import { AuthUserController } from './controllers/user/AuthUserController';
 const router = Router();
 
-router.get('/teste', (req: Request, res: Response) => {
-    return res.json({ nome: 'Sujeito Pizza' })
-});
+router.post('/users', new CreateUserControler().handle)
+router.post('/session', new AuthUserController().handle)
 
 export { router };
