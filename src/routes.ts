@@ -1,9 +1,40 @@
-import express, { Router } from 'express';
-import { CreateUserControler } from './controllers/user/CreateUserControler';
+import { Router } from 'express';
+import multer from 'multer';
+
+import { CreateUserController } from './controllers/user/CreateUserController';
 import { AuthUserController } from './controllers/user/AuthUserController';
+import { DetailUserController } from './controllers/user/DetailUserController';
+
+import { CreateCategoryController } from './controllers/category/CreateCategoryController';
+import { ListCategoryController } from './controllers/category/ListCategoryController';
+
+import { CreateProductController } from './controllers/product/CreateProductController';
+import { ListByCategoryController } from './controllers/product/ListByCategoryController';
+
+import { isAuthenticated } from './middlewares/isAuthenticated';
+
+import uploadConfig from './config/multer'
+
 const router = Router();
 
-router.post('/users', new CreateUserControler().handle)
-router.post('/session', new AuthUserController().handle)
+const upload = multer(uploadConfig.upload("./tmp"));
 
-export { router };
+//-- ROTAS DE USER
+router.post('/users', new CreateUserController().handle);
+
+router.post('/session', new AuthUserController().handle);
+
+router.get('/userinfo', isAuthenticated, new DetailUserController().handle);
+
+
+//-- ROTAS DE CATEGORY
+router.post('/category', isAuthenticated, new CreateCategoryController().handle)
+
+router.get('/category', isAuthenticated, new ListCategoryController().handle)
+
+//-- ROTAS DE PRODUTO
+router.post('/product', isAuthenticated, upload.single('file'), new CreateProductController().handle)
+
+router.get('/category/product', isAuthenticated, new ListByCategoryController().handle)
+
+export { router }; 
